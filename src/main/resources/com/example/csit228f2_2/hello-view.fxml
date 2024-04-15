@@ -7,7 +7,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="367.0" prefWidth="423.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.csit228f2_2.HelloController">
+<AnchorPane prefHeight="367.0" prefWidth="423.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.csit228f2_2.HelloController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -57,5 +57,6 @@
         </items>
       </MenuButton>
       <PasswordField layoutX="106.0" layoutY="184.0" />
+      <Button fx:id="btnSignout" layoutX="356.0" layoutY="127.0" mnemonicParsing="false" onAction="#handleSignOut" text="Sign out" />
    </children>
 </AnchorPane>

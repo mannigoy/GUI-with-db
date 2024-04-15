@@ -1,10 +1,12 @@
 package com.example.csit228f2_2;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
@@ -33,12 +35,18 @@ import java.util.List;
 
 public class HelloApplication extends Application {
     public static List<User> users;
+    private static HelloApplication instance;
+
+    public static HelloApplication getInstance() {
+        return instance;
+    }
     public static void main(String[] args) {
         launch();
     }
 
     @Override
     public void start(Stage stage) throws Exception {
+        instance = this;
         users = new ArrayList<>();
         try(Connection connection = MySQLConnection.getConnection();){
             Statement statement = connection.createStatement();
@@ -146,6 +154,7 @@ public class HelloApplication extends Application {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
                         try {
                             Scene scene = new Scene(loader.load());
+
                             stage.setScene(scene);
                             stage.show();
                         } catch (IOException e) {
@@ -165,32 +174,17 @@ public class HelloApplication extends Application {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("Register-view.fxml"));
                 try {
                     Scene scene = new Scene(loader.load());
+
+                    Stage stage = (Stage) btnRegister.getScene().getWindow();
+
+                    RegisterController controller = loader.getController();
+                    controller.setHelloApplicationStage(stage);
                     stage.setScene(scene);
                     stage.show();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
 
-
-//insert data
-
-
-              /*  String username = tfUsername.getText();
-                String password = pfPassword.getText();
-                for (User user : users) {
-                    if (username.equals(user.username) && password.equals(user.password)) {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
-                        try {
-                            Scene scene = new Scene(loader.load());
-                            stage.setScene(scene);
-                            stage.show();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                }
-                actionTarget.setText("Invalid username/password");
-                actionTarget.setOpacity(1);*/
             }
         });
 
@@ -207,5 +201,27 @@ public class HelloApplication extends Application {
         Scene scene = new Scene(pnMain, 700, 560);
         stage.setScene(scene);
         stage.show();
+    }
+   /* public void showHelloApplicationWindow() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Hello-view.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }*/
+
+    public static void restart() {
+        Platform.runLater(() -> {
+            try {
+                // Relaunch the application
+                new HelloApplication().start(new Stage());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 }
