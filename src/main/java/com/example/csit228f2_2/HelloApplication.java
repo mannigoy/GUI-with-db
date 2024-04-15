@@ -24,6 +24,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,10 +40,20 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         users = new ArrayList<>();
-        // LOAD USERS
-        users.add(new User("tsgtest", "123456"));
-        users.add(new User("jayvince", "secret"));
-        users.add(new User("russselll", "palma"));
+        try(Connection connection = MySQLConnection.getConnection();){
+            Statement statement = connection.createStatement();
+            String selectQuery = "SELECT * FROM USERS";
+            ResultSet resultSet = statement.executeQuery(selectQuery);
+            while(resultSet.next()){
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("username");
+                String email = resultSet.getString("password");
+             users.add(new User(name,email));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         AnchorPane pnMain = new AnchorPane();
         GridPane grid = new GridPane();
@@ -105,15 +119,28 @@ public class HelloApplication extends Application {
         hbSignIn.getChildren().add(btnSignIn);
         hbSignIn.setAlignment(Pos.CENTER);
         grid.add(hbSignIn, 0, 3, 2, 1);
+        Button btnRegister = new Button("Register");
+
+        btnSignIn.setFont(Font.font(45));
+        HBox hbRegister = new HBox();
+        hbRegister.getChildren().add(btnRegister);
+        hbRegister.setAlignment(Pos.CENTER);
+        grid.add(hbRegister, 0, 4, 3, 2);
+        btnRegister.setFont(Font.font(45));
         final Text actionTarget = new Text("Hi");
-        actionTarget.setFont(Font.font(30));
+      actionTarget.setFont(Font.font(30));
         grid.add(actionTarget, 1, 6);
+
+
 
         btnSignIn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
+
                 String username = tfUsername.getText();
                 String password = pfPassword.getText();
+
+
                 for (User user : users) {
                     if (username.equals(user.username) && password.equals(user.password)) {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
@@ -128,6 +155,33 @@ public class HelloApplication extends Application {
                 }
                 actionTarget.setText("Invalid username/password");
                 actionTarget.setOpacity(1);
+            }
+        });
+
+
+        btnRegister.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+
+//insert data
+
+
+              /*  String username = tfUsername.getText();
+                String password = pfPassword.getText();
+                for (User user : users) {
+                    if (username.equals(user.username) && password.equals(user.password)) {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
+                        try {
+                            Scene scene = new Scene(loader.load());
+                            stage.setScene(scene);
+                            stage.show();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+                actionTarget.setText("Invalid username/password");
+                actionTarget.setOpacity(1);*/
             }
         });
 
