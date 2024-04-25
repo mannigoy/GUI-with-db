@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.csit228f2_2.HelloApplication">
+   <children>
+      <Text layoutX="169.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hanz Gwapo Portal">
+         <font>
+            <Font size="31.0" />
+         </font>
+      </Text>
+      <Label layoutX="155.0" layoutY="145.0" text="Username:" />
+      <Label layoutX="155.0" layoutY="210.0" text="Password:" />
+      <TextField fx:id="LogIn_txtUsername" layoutX="272.0" layoutY="141.0" />
+      <PasswordField fx:id="LogIn_PF_password" layoutX="272.0" layoutY="206.0" />
+      <Button fx:id="LogIn_btnLogIn" layoutX="200.0" layoutY="304.0" mnemonicParsing="false" onAction="#LogInClick" text="Login" />
+      <Button fx:id="LogIn_btnRegister" layoutX="363.0" layoutY="304.0" mnemonicParsing="false" onAction="#RegisterClick" text="Register" />
+      <Text fx:id="altText" layoutX="200.0" layoutY="274.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Hyperlink fx:id="forgotPassword" layoutX="149.0" layoutY="231.0" onAction="#ForgotPassClicked" text="Forgot Password" />
+   </children>
+</AnchorPane>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.csit228f2_2.MainViewController">
+    <children>
+    <Text layoutX="169.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hanz Gwapo Portal">
+        <font>
+            <Font size="31.0" />
+        </font>
+    </Text>
+      <Text layoutX="42.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Admin View" />
+      <TableView fx:id="tableAdmin" layoutX="69.0" layoutY="130.0" prefHeight="200.0" prefWidth="282.0">
+        <columns>
+            <TableColumn fx:id="colId" prefWidth="75.0" text="Id" />
+          <TableColumn fx:id="colUser" prefWidth="75.0" text="User" />
+          <TableColumn fx:id="colPassword" prefWidth="75.0" text="Password" />
+
+        </columns>
+      </TableView>
+      <Button fx:id="deleteButton" layoutX="405.0" layoutY="305.0" mnemonicParsing="false" onAction="#deleteSelectedRow" text="Delete" />
+      <Button fx:id="btnSignOut" layoutX="488.0" layoutY="305.0" mnemonicParsing="false" onAction="#handleSignOut" text="Sign Out" />
+    </children>
+</AnchorPane>
