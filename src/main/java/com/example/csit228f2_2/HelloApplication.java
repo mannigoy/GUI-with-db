@@ -1,227 +1,214 @@
-package com.example.csit228f2_2;
+    package com.example.csit228f2_2;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.StrokeType;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
+    import javafx.application.Application;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+    import javafx.fxml.FXML;
+    import javafx.fxml.FXMLLoader;
 
-public class HelloApplication extends Application {
-    public static List<User> users;
-    private static HelloApplication instance;
+    import javafx.scene.Scene;
+    import javafx.scene.control.*;
 
-    public static HelloApplication getInstance() {
-        return instance;
-    }
-    public static void main(String[] args) {
-        launch();
-    }
+    import javafx.scene.text.Text;
+    import javafx.stage.Stage;
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        instance = this;
-        users = new ArrayList<>();
-        try(Connection connection = MySQLConnection.getConnection();){
-            Statement statement = connection.createStatement();
-            String selectQuery = "SELECT * FROM USERS";
-            ResultSet resultSet = statement.executeQuery(selectQuery);
-            while(resultSet.next()){
-                int id = resultSet.getInt("id");
-                String name = resultSet.getString("username");
-                String email = resultSet.getString("password");
-             users.add(new User(name,email));
+    import java.io.IOException;
+    import java.net.MalformedURLException;
+    import java.sql.*;
+    import java.util.ArrayList;
+    import java.util.HashSet;
+    import java.util.List;
+    import java.util.Set;
+
+    public class HelloApplication extends Application {
+        @FXML
+        Button LogIn_btnLogIn;
+        @FXML
+        Button LogIn_btnRegister;
+        @FXML
+        TextField LogIn_txtUsername;
+        @FXML
+        PasswordField LogIn_PF_password;
+        @FXML
+        Text altText;
+        @FXML
+        Hyperlink forgotPassword;
+
+        String EnteredUsername, EnteredPassword;
+
+        public static List<User> users;
+        private static HelloApplication instance;
+
+        public static HelloApplication getInstance() {
+            return instance;
+        }
+        public static void main(String[] args) {
+            launch();
+        }
+        public static int userId;
+        @Override
+        public void start(Stage stage) throws Exception {
+            createTable();
+            createPersonalDetailsTableInNewDatabase();
+            users = new ArrayList<>();
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("LogIn.fxml"));
+            Scene scene = new Scene(loader.load());
+            stage.setScene(scene);
+            stage.show();
+        }
+            public void LogInClick() {
+
+                EnteredUsername = LogIn_txtUsername.getText();
+                EnteredPassword = LogIn_PF_password.getText();
+                if(EnteredUsername.equals("admin") && EnteredPassword.equals("123test")) {
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("MainView.fxml"));
+                        Scene scene = new Scene(loader.load());
+                        Stage stage = (Stage) LogIn_btnLogIn.getScene().getWindow();
+                        stage.setScene(scene);
+                        stage.show();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+
+                }
+                else {
+                  //  userId = authenticateUser(EnteredUsername, EnteredPassword);
+                    try (Connection connection = MySQLConnection.getConnection();) {
+                        Statement statement = connection.createStatement();
+                        String selectQuery = "SELECT * FROM users WHERE username = '" + EnteredUsername + "' AND password = '" + EnteredPassword+"'";
+                        ResultSet resultSet = statement.executeQuery(selectQuery);
+
+                        if (resultSet.next()) {
+                            userId = resultSet.getInt("id");
+                            String name = resultSet.getString("username");
+                            String password = resultSet.getString("password");
+                            users.add(new User(userId, name, password));
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("UserView.fxml"));
+                            Scene scene = new Scene(loader.load());
+                            Stage stage = (Stage) LogIn_btnLogIn.getScene().getWindow();
+                            stage.setScene(scene);
+                            stage.show();
+                        }
+
+
+                    } catch (SQLException | MalformedURLException e) {
+                        throw new RuntimeException(e);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                    altText.setText("Invalid username/password");
+
             }
 
-        } catch (SQLException e) {
+
+    public void RegisterClick(){
+            try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Register-view.fxml"));
+            Scene scene = new Scene(loader.load());
+            Stage stage = (Stage)LogIn_btnRegister.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void ForgotPassClicked(){
+            EnteredUsername = LogIn_txtUsername.getText();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ChangePassword.fxml"));
+            Scene scene = new Scene(loader.load());
+            ChangePassController changePasswordController = loader.getController();
+            changePasswordController.setInitialUsername(EnteredUsername);
+
+            Stage stage = (Stage)LogIn_btnRegister.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        AnchorPane pnMain = new AnchorPane();
-        GridPane grid = new GridPane();
-        pnMain.getChildren().add(grid);
-        grid.setAlignment(Pos.CENTER);
-        Text sceneTitle = new Text("Welcome to CSIT228");
-        sceneTitle.setStrokeType(StrokeType.CENTERED);
-        sceneTitle.setStrokeWidth(100);
-        sceneTitle.setFill(Paint.valueOf("#325622"));
-        sceneTitle.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 69));
-        grid.add(sceneTitle, 0, 0, 2, 1);
 
-        Label lblUsername = new Label("Username: ");
-        lblUsername.setTextFill(Paint.valueOf("#c251d5"));
-        lblUsername.setFont(Font.font(40));
-        grid.add(lblUsername, 0, 1);
-
-        TextField tfUsername = new TextField();
-        tfUsername.setFont(Font.font(35));
-        grid.add(tfUsername, 1, 1);
-
-        Label lblPassword = new Label("Password: ");
-        lblPassword.setTextFill(Paint.valueOf("#c251d5"));
-        lblPassword.setFont(Font.font(40));
-        grid.add(lblPassword, 0, 2);
-
-        TextField pfPassword = new PasswordField();
-        pfPassword.setFont(Font.font(35));
-        grid.add(pfPassword, 1, 2);
-
-        Button btnShow = new Button("<*>");
-        HBox hbShow = new HBox();
-        hbShow.getChildren().add(btnShow);
-        hbShow.setAlignment(Pos.CENTER);
-        hbShow.setMaxWidth(150);
-        TextField tfPassword = new TextField();
-        tfPassword.setFont(Font.font(35));
-        grid.add(tfPassword, 1, 2);
-        tfPassword.setVisible(false);
-        grid.add(hbShow, 2, 2);
-
-        btnShow.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent actionEvent) {
-                tfPassword.setText(pfPassword.getText());
-                tfPassword.setVisible(true);
-                pfPassword.setVisible(false);
-                grid.add(new Button("Hello"), 4,4);
-            }
-        });
-
-        btnShow.setOnMouseReleased(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                tfPassword.setVisible(false);
-                pfPassword.setVisible(true);
-            }
-        });
-
-        Button btnSignIn = new Button("Sign In");
-        btnSignIn.setFont(Font.font(45));
-        HBox hbSignIn = new HBox();
-        hbSignIn.getChildren().add(btnSignIn);
-        hbSignIn.setAlignment(Pos.CENTER);
-        grid.add(hbSignIn, 0, 3, 2, 1);
-        Button btnRegister = new Button("Register");
-
-        btnSignIn.setFont(Font.font(45));
-        HBox hbRegister = new HBox();
-        hbRegister.getChildren().add(btnRegister);
-        hbRegister.setAlignment(Pos.CENTER);
-        grid.add(hbRegister, 0, 4, 3, 2);
-        btnRegister.setFont(Font.font(45));
-        final Text actionTarget = new Text("Hi");
-      actionTarget.setFont(Font.font(30));
-        grid.add(actionTarget, 1, 6);
-
-
-
-        btnSignIn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-
-                String username = tfUsername.getText();
-                String password = pfPassword.getText();
-
-
-                for (User user : users) {
-                    if (username.equals(user.username) && password.equals(user.password)) {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
-                        try {
-                            Scene scene = new Scene(loader.load());
-
-                            stage.setScene(scene);
-                            stage.show();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                }
-                actionTarget.setText("Invalid username/password");
-                actionTarget.setOpacity(1);
-            }
-        });
-
-
-        btnRegister.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("Register-view.fxml"));
-                try {
-                    Scene scene = new Scene(loader.load());
-
-                    Stage stage = (Stage) btnRegister.getScene().getWindow();
-
-                    RegisterController controller = loader.getController();
-                    controller.setHelloApplicationStage(stage);
-                    stage.setScene(scene);
-                    stage.show();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
-        });
-
-        EventHandler<KeyEvent> fieldChange = new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent actionEvent) {
-                actionTarget.setOpacity(0);
-            }
-        };
-        tfUsername.setOnKeyTyped(fieldChange);
-        pfPassword.setOnKeyTyped(fieldChange);
-
-
-        Scene scene = new Scene(pnMain, 700, 560);
-        stage.setScene(scene);
-        stage.show();
     }
-   /* public void showHelloApplicationWindow() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Hello-view.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
 
-    public static void restart() {
-        Platform.runLater(() -> {
-            try {
-                // Relaunch the application
-                new HelloApplication().start(new Stage());
-            } catch (Exception e) {
+
+
+        public void createTable(){
+            try(Connection c = MySQLConnection.getConnection();
+                Statement statement = c.createStatement()){
+                String createTableQuery = "CREATE TABLE IF NOT EXISTS users (" +
+                        "id INT AUTO_INCREMENT PRIMARY KEY," +
+                        "username VARCHAR(50) NOT NULL," +
+                        "password VARCHAR(50) NOT NULL)";
+                statement.execute(createTableQuery);
+                System.out.println("Table created successfully");
+            }catch (SQLException e){
                 e.printStackTrace();
             }
-        });
+
+
+        }
+        public void createPersonalDetailsTableInNewDatabase() {
+            try (Connection c = MySQLConnection.getConnection();
+                 Statement statement = c.createStatement()) {
+
+                // Create PersonalDetails table
+                String createTableQuery = "CREATE TABLE IF NOT EXISTS PersonalDetails (" +
+                        "id INT AUTO_INCREMENT PRIMARY KEY," +
+                        "user_id INT," +
+                        "name VARCHAR(80) NOT NULL," +
+                        "money INT DEFAULT 0," +
+                        "time TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
+                        "FOREIGN KEY (user_id) REFERENCES users(id))";
+                statement.execute(createTableQuery);
+
+                // Check for existing user_id values in users table
+                ResultSet resultSet = statement.executeQuery("SELECT id FROM users");
+                Set<Integer> userIds = new HashSet<>();
+                while (resultSet.next()) {
+                    userIds.add(resultSet.getInt("id"));
+                }
+
+                // Insert sample data into PersonalDetails table
+                if (!userIds.isEmpty()) {
+                    for (int userId : userIds) {
+                        String insertQuery = "INSERT INTO PersonalDetails (user_id, name) VALUES (?, ?)";
+                        try (PreparedStatement preparedStatement = c.prepareStatement(insertQuery)) {
+                            preparedStatement.setInt(1, userId);
+                            preparedStatement.setString(2, "Sample Name");
+                            preparedStatement.executeUpdate();
+                        }
+                    }
+                    System.out.println("Sample data inserted into PersonalDetails table.");
+                } else {
+                    System.out.println("No existing user data found. Skipping insertion into PersonalDetails table.");
+                }
+
+                System.out.println("PersonalDetails table created successfully in the SecondDatabase");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        public void getFromTable(){
+            try (Connection connection = MySQLConnection.getConnection();) {
+                Statement statement = connection.createStatement();
+                String selectQuery = "SELECT * FROM USERS";
+                ResultSet resultSet = statement.executeQuery(selectQuery);
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String name = resultSet.getString("username");
+                    String email = resultSet.getString("password");
+                    users.add(new User(id, name, email));
+                }
+
+            } catch (SQLException | MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
-}

@@ -19,16 +19,7 @@ public class HelloController {
     private void onHelloButtonClick() {
 //        welcomeText.setText("Welcome to JavaFX Application!");
     }
-    @FXML
-    private void handleSignOut(ActionEvent event) {
-        Platform.runLater(() -> {
-            for (Stage stage : StageHelper.getStages()) {
-                stage.close();
-            }
-            // Restart the application
-            HelloApplication.restart();
-        });
-    }
+
 
     @FXML
     private void onNightModeClick() {

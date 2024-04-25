@@ -5,8 +5,6 @@ import java.sql.Statement;
 
 public class CreateTable {
 
-
-
         public static void main(String[] args) {
             try(Connection c = MySQLConnection.getConnection();
                 Statement statement = c.createStatement()){
