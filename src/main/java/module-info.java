@@ -6,4 +6,6 @@ module com.example.csit228f2_2 {
 
     opens com.example.csit228f2_2 to javafx.fxml;
     exports com.example.csit228f2_2;
+    exports com.example.csit228f2_2.Final;
+    opens com.example.csit228f2_2.Final to javafx.fxml;
 }

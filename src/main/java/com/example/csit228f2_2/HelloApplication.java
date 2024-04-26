@@ -51,7 +51,7 @@
             createPersonalDetailsTableInNewDatabase();
             users = new ArrayList<>();
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("LogIn.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Register.fxml"));
             Scene scene = new Scene(loader.load());
             stage.setScene(scene);
             stage.show();
@@ -85,7 +85,7 @@
                             String name = resultSet.getString("username");
                             String password = resultSet.getString("password");
                             users.add(new User(userId, name, password));
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("UserView.fxml"));
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("UserViewdimao.fxml"));
                             Scene scene = new Scene(loader.load());
                             Stage stage = (Stage) LogIn_btnLogIn.getScene().getWindow();
                             stage.setScene(scene);
@@ -126,6 +126,7 @@
             changePasswordController.setInitialUsername(EnteredUsername);
 
             Stage stage = (Stage)LogIn_btnRegister.getScene().getWindow();
+
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.csit228f2_2.Final.UserViewController">
+   <top>
+      <AnchorPane prefHeight="147.0" prefWidth="600.0" style="-fx-background-color: #ff5252;" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fx:id="logo" fitHeight="99.0" fitWidth="116.0" layoutX="60.0" layoutY="20.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" />
+            <Text fill="WHITE" layoutX="213.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Money Tracker">
+               <font>
+               <Font name="Arial Black" size="28.0" />
+            </font>
+            </Text>
+            <Text fill="WHITE" layoutX="213.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="HI!!">
+               <font>
+                  <Font name="Arial Black" size="19.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" layoutX="271.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name">
+               <font>
+                  <Font name="Arial Black" size="19.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" layoutX="213.0" layoutY="133.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tara achieve financial Freedom">
+               <font>
+                  <Font name="Roboto Light" size="11.0" />
+               </font></Text>
+         </children></AnchorPane>
+   </top>
+   <center>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <TableView layoutX="59.0" layoutY="14.0" prefHeight="190.0" prefWidth="505.0">
+              <columns>
+                <TableColumn prefWidth="98.33334732055664" text="Date" />
+                  <TableColumn prefWidth="68.66665649414062" text="Type" />
+                <TableColumn prefWidth="113.99998474121094" text="Amount" />
+                  <TableColumn prefWidth="109.33331298828125" text="Category" />
+                  <TableColumn prefWidth="113.33336385091144" text="Description" />
+              </columns>
+            </TableView>
+         </children></AnchorPane>
+   </center>
+   <bottom>
+      <AnchorPane prefHeight="45.0" prefWidth="606.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button layoutX="68.0" layoutY="10.0" mnemonicParsing="false" text="Account" />
+            <Button layoutX="487.0" layoutY="10.0" mnemonicParsing="false" text="Add" />
+            <Button layoutX="349.0" layoutY="10.0" mnemonicParsing="false" text="Edit" />
+            <Button layoutX="200.0" layoutY="10.0" mnemonicParsing="false" text="Delete" />
+         </children>
+      </AnchorPane>
+   </bottom>
+</BorderPane>
