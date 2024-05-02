@@ -6,13 +6,19 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class Personal {
+    private int id;
     private final SimpleStringProperty date;
     private final SimpleStringProperty type;
     private final SimpleStringProperty amount;
     private final SimpleStringProperty category;
     private final SimpleStringProperty description;
 
-    public Personal(String date, String type,String amount, String category, String description) {
+    public int getId() {
+        return id;
+    }
+
+    public Personal(int id, String date, String type, String amount, String category, String description) {
+        this.id=id;
         this.date = new SimpleStringProperty(date);
         this.type = new SimpleStringProperty(type);
         this.amount = new SimpleStringProperty(amount);

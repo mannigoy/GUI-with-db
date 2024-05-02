@@ -54,48 +54,50 @@ public class RegisterControllerFinal {
         altTextFinal.setFill(Color.RED);
         String pass1 = txtPassword.getText();
         String pass2 = txtConfirmPassword.getText();
-        Main.EnteredUsername= txtUsername.getText();
-        if (confirm(pass1, pass2)) {
-            try (Connection c = MySQLConnection.getConnection()) {
+        Main.EnteredUsername = txtUsername.getText();
 
-                try (PreparedStatement checkStatement = c.prepareStatement("SELECT COUNT(*) FROM users WHERE username = ?")) {
+        if (!confirm(pass1, pass2)) {
+            altTextFinal.setText("Password Not the same");
+            return;
+        }
+
+            try (Connection c = MySQLConnection.getConnection();
+                 PreparedStatement checkStatement = c.prepareStatement("SELECT COUNT(*) FROM users WHERE username = ?");
+                 PreparedStatement insertStatement = c.prepareStatement("INSERT INTO users (username, password) VALUES (?, ?)")){
+
                     checkStatement.setString(1, Main.EnteredUsername);
                     try (ResultSet resultSet = checkStatement.executeQuery()) {
                         if (resultSet.next() && resultSet.getInt(1) > 0) {
                             altTextFinal.setText("Username already exists.");
-
                             return;
                         }
                     }
-                }
-
-                // If username is unique, proceed to insert the data
-                try (PreparedStatement insertStatement = c.prepareStatement("INSERT INTO users (username, password) VALUES (?, ?)")) {
                     insertStatement.setString(1, Main.EnteredUsername);
                     insertStatement.setString(2, pass1);
                     int rowsInserted = insertStatement.executeUpdate();
                     if (rowsInserted > 0) {
-                      //  ResultSet generatedKeys = insertStatement.getGeneratedKeys();
-                    //    if (generatedKeys.next()) {
-                     //        Main.userId = generatedKeys.getInt(1); // Retrieve the generated user ID
-
-                   //     }
-
-                        System.out.println("Data inserted successfully");
                         showUserWindow();
                         Stage stage = (Stage) btnRegister.getScene().getWindow();
                         stage.close();
                     }
-                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
 
 
+
+        try (Connection connection = MySQLConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE username = ?")) {
+            statement.setString(1, Main.EnteredUsername);
+            ResultSet resultSet = statement.executeQuery();
+             if (resultSet.next()) {
+                 Main.userId = resultSet.getInt("id");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        else
-            altTextFinal.setText("Password Not the same");
     }
+
     private void showUserWindow() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("UserView.fxml"));
@@ -109,10 +111,7 @@ public class RegisterControllerFinal {
     }
     @FXML
     public boolean confirm(String pass1, String pass2){
-
         return pass1.equals(pass2);
-
-
     }
     @FXML
     private void onLogInClick() {

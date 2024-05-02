@@ -78,8 +78,8 @@ ToggleGroup toggleGroup = new ToggleGroup();
 
             Stage stage = (Stage) btnAddMount.getScene().getWindow();
             stage.setScene(scene);
-          //  stage.show();
-            stage.close();
+           stage.show();
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.csit228f2_2.Final.UserViewController">
+<BorderPane fx:id="ablo" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.csit228f2_2.Final.UserViewController">
    <top>
       <AnchorPane prefHeight="147.0" prefWidth="600.0" style="-fx-background-color: #ff5252;" BorderPane.alignment="CENTER">
          <children>
@@ -48,10 +48,10 @@
    <bottom>
       <AnchorPane prefHeight="45.0" prefWidth="606.0" BorderPane.alignment="CENTER">
          <children>
-            <Button layoutX="68.0" layoutY="10.0" mnemonicParsing="false" text="Account" />
-            <Button fx:id="btnAdd" layoutX="487.0" layoutY="10.0" mnemonicParsing="false" onAction="#onButtonAddClick" text="Add" />
-            <Button layoutX="349.0" layoutY="10.0" mnemonicParsing="false" text="Edit" />
-            <Button layoutX="200.0" layoutY="10.0" mnemonicParsing="false" text="Delete" />
+            <Button fx:id="btnSignout" layoutX="31.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleSignOut" text="Sign out" />
+            <Button fx:id="btnAdd" layoutX="513.0" layoutY="10.0" mnemonicParsing="false" onAction="#onButtonAddClick" text="Add" />
+            <Button fx:id="btnEdit" layoutX="347.0" layoutY="10.0" mnemonicParsing="false" text="Edit" />
+            <Button fx:id="btnDelete" layoutX="190.0" layoutY="10.0" mnemonicParsing="false" onAction="#onBtnDeleteClick" text="Delete" />
          </children>
       </AnchorPane>
    </bottom>

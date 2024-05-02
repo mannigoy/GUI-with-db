@@ -17,12 +17,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
-public class LoginController {
+public class LoginController implements FXMLLOADER{
 
 
 
@@ -54,63 +51,40 @@ public class LoginController {
         Main.EnteredUsername = LogIn_txtUsername.getText();
         Main.EnteredPassword = LogIn_PF_password.getText();
         if(Main.EnteredUsername.equals("admin") && Main.EnteredPassword.equals("123test")) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("MainView.fxml"));
-                Scene scene = new Scene(loader.load());
-                Stage stage = (Stage) LogIn_btnLogIn.getScene().getWindow();
-                stage.setScene(scene);
-                stage.show();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-
+            loadFxml("MainView.fxml");
         }
         else {
             //  userId = authenticateUser(EnteredUsername, EnteredPassword);
-            try (Connection connection = MySQLConnection.getConnection();) {
-                Statement statement = connection.createStatement();
-                String selectQuery = "SELECT * FROM users WHERE username = '" + Main.EnteredUsername + "' AND password = '" + Main.EnteredPassword+"'";
-                ResultSet resultSet = statement.executeQuery(selectQuery);
+            try (Connection connection = MySQLConnection.getConnection();
+                 PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE username = ? AND password = ?")) {
+                statement.setString(1, Main.EnteredUsername);
+                statement.setString(2, Main.EnteredPassword);
+                ResultSet resultSet = statement.executeQuery();
 
                 if (resultSet.next()) {
+                    String passwordFromDB = resultSet.getString("password");
                     Main.userId = resultSet.getInt("id");
-                    String name = resultSet.getString("username");
-                    String password = resultSet.getString("password");
-                   // users.add(new User(userId, name, password));
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("UserView.fxml"));
-                    Scene scene = new Scene(loader.load());
-                    Stage stage = (Stage) LogIn_btnLogIn.getScene().getWindow();
-                    stage.setScene(scene);
-                    stage.show();
+                    if (Main.EnteredPassword.equals(passwordFromDB)) {
+                        Main.userId = resultSet.getInt("id");
+                        loadFxml("UserView.fxml");
+                        Stage currentStage = (Stage) LogIn_btnLogIn.getScene().getWindow();
+                        currentStage.close();
+                        return;
+                    } else {
+                        altText.setText("Invalid password");
+                    }
+                } else {
+                    altText.setText("Invalid username");
                 }
-
-
-            } catch (SQLException | MalformedURLException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
+            } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         }
-
-        altText.setText("Invalid username/password");
-
     }
     public void ForgotPassClicked(){
         Main.EnteredUsername = LogIn_txtUsername.getText();
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("ChangePassword2.fxml"));
-            Scene scene = new Scene(loader.load());
-            ChangePassword changePassword = loader.getController();
-            changePassword.setInitialUsername(Main.EnteredUsername);
-
-            Stage stage = (Stage)LogIn_btnLogIn.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-
+       loadFxml("ChangePassword2.fxml");
+        Stage currentStage = (Stage) LogIn_btnLogIn.getScene().getWindow();
+        currentStage.close();
     }
 }

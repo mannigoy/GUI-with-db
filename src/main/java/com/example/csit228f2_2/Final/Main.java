@@ -20,12 +20,10 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         createTable();
         createPersonalDetailsTableInNewDatabase();
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Register.fxml"));
         Scene scene = new Scene(loader.load());
         stage.setScene(scene);
         stage.show();
-
     }
 
 
