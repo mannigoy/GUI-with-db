@@ -23,7 +23,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class LoginController {
-    public static int userId;
+
+
 
     @FXML
     ImageView logo;
@@ -39,7 +40,8 @@ public class LoginController {
     @FXML
     Hyperlink forgotPassword;
 
-    String EnteredUsername, EnteredPassword;
+
+
 
     @FXML
     public void initialize(){
@@ -49,9 +51,9 @@ public class LoginController {
     }
     public void LogInClick() {
 
-        EnteredUsername = LogIn_txtUsername.getText();
-        EnteredPassword = LogIn_PF_password.getText();
-        if(EnteredUsername.equals("admin") && EnteredPassword.equals("123test")) {
+        Main.EnteredUsername = LogIn_txtUsername.getText();
+        Main.EnteredPassword = LogIn_PF_password.getText();
+        if(Main.EnteredUsername.equals("admin") && Main.EnteredPassword.equals("123test")) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("MainView.fxml"));
                 Scene scene = new Scene(loader.load());
@@ -68,11 +70,11 @@ public class LoginController {
             //  userId = authenticateUser(EnteredUsername, EnteredPassword);
             try (Connection connection = MySQLConnection.getConnection();) {
                 Statement statement = connection.createStatement();
-                String selectQuery = "SELECT * FROM users WHERE username = '" + EnteredUsername + "' AND password = '" + EnteredPassword+"'";
+                String selectQuery = "SELECT * FROM users WHERE username = '" + Main.EnteredUsername + "' AND password = '" + Main.EnteredPassword+"'";
                 ResultSet resultSet = statement.executeQuery(selectQuery);
 
                 if (resultSet.next()) {
-                    userId = resultSet.getInt("id");
+                    Main.userId = resultSet.getInt("id");
                     String name = resultSet.getString("username");
                     String password = resultSet.getString("password");
                    // users.add(new User(userId, name, password));
@@ -95,12 +97,12 @@ public class LoginController {
 
     }
     public void ForgotPassClicked(){
-        EnteredUsername = LogIn_txtUsername.getText();
+        Main.EnteredUsername = LogIn_txtUsername.getText();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ChangePassword2.fxml"));
             Scene scene = new Scene(loader.load());
             ChangePassword changePassword = loader.getController();
-            changePassword.setInitialUsername(EnteredUsername);
+            changePassword.setInitialUsername(Main.EnteredUsername);
 
             Stage stage = (Stage)LogIn_btnLogIn.getScene().getWindow();
             stage.setScene(scene);

@@ -54,12 +54,12 @@ public class RegisterControllerFinal {
         altTextFinal.setFill(Color.RED);
         String pass1 = txtPassword.getText();
         String pass2 = txtConfirmPassword.getText();
-        String user = txtUsername.getText();
+        Main.EnteredUsername= txtUsername.getText();
         if (confirm(pass1, pass2)) {
             try (Connection c = MySQLConnection.getConnection()) {
 
                 try (PreparedStatement checkStatement = c.prepareStatement("SELECT COUNT(*) FROM users WHERE username = ?")) {
-                    checkStatement.setString(1, user);
+                    checkStatement.setString(1, Main.EnteredUsername);
                     try (ResultSet resultSet = checkStatement.executeQuery()) {
                         if (resultSet.next() && resultSet.getInt(1) > 0) {
                             altTextFinal.setText("Username already exists.");
@@ -71,10 +71,16 @@ public class RegisterControllerFinal {
 
                 // If username is unique, proceed to insert the data
                 try (PreparedStatement insertStatement = c.prepareStatement("INSERT INTO users (username, password) VALUES (?, ?)")) {
-                    insertStatement.setString(1, user);
+                    insertStatement.setString(1, Main.EnteredUsername);
                     insertStatement.setString(2, pass1);
                     int rowsInserted = insertStatement.executeUpdate();
                     if (rowsInserted > 0) {
+                      //  ResultSet generatedKeys = insertStatement.getGeneratedKeys();
+                    //    if (generatedKeys.next()) {
+                     //        Main.userId = generatedKeys.getInt(1); // Retrieve the generated user ID
+
+                   //     }
+
                         System.out.println("Data inserted successfully");
                         showUserWindow();
                         Stage stage = (Stage) btnRegister.getScene().getWindow();

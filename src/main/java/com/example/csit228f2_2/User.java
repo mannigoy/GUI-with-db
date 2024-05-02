@@ -6,14 +6,14 @@ public class User {
     private int id;
     String username;
     String password;
-    String css;
+
 
     public User(int id, String username, String password) throws MalformedURLException {
         this.id=id;
         this.username = username;
         this.password = password;
 
-        css = username + ".css";
+
     }
 
     public int getId() {

@@ -14,13 +14,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Main extends Application {
-
+    public static String EnteredUsername, EnteredPassword;
+    public static int userId;
     @Override
     public void start(Stage stage) throws Exception {
         createTable();
         createPersonalDetailsTableInNewDatabase();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("UserView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Register.fxml"));
         Scene scene = new Scene(loader.load());
         stage.setScene(scene);
         stage.show();
@@ -48,38 +49,18 @@ public class Main extends Application {
              Statement statement = c.createStatement()) {
 
             // Create PersonalDetails table
-            String createTableQuery = "CREATE TABLE IF NOT EXISTS PersonalDetails (" +
+            String createTableQuery = "CREATE TABLE IF NOT EXISTS MoneyDataBase (" +
                     "id INT AUTO_INCREMENT PRIMARY KEY," +
                     "user_id INT," +
-                    "name VARCHAR(80) NOT NULL," +
-                    "money INT DEFAULT 0," +
                     "time TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
+                    "type VARCHAR(50),"  +
+                    "money DOUBLE DEFAULT 0," +
+                    "category VARCHAR(50)," +
+                    "description VARCHAR(80)," +
                     "FOREIGN KEY (user_id) REFERENCES users(id))";
             statement.execute(createTableQuery);
 
-            // Check for existing user_id values in users table
-            ResultSet resultSet = statement.executeQuery("SELECT id FROM users");
-            Set<Integer> userIds = new HashSet<>();
-            while (resultSet.next()) {
-                userIds.add(resultSet.getInt("id"));
-            }
-
-            // Insert sample data into PersonalDetails table
-            if (!userIds.isEmpty()) {
-                for (int userId : userIds) {
-                    String insertQuery = "INSERT INTO PersonalDetails (user_id, name) VALUES (?, ?)";
-                    try (PreparedStatement preparedStatement = c.prepareStatement(insertQuery)) {
-                        preparedStatement.setInt(1, userId);
-                        preparedStatement.setString(2, "Sample Name");
-                        preparedStatement.executeUpdate();
-                    }
-                }
-                System.out.println("Sample data inserted into PersonalDetails table.");
-            } else {
-                System.out.println("No existing user data found. Skipping insertion into PersonalDetails table.");
-            }
-
-            System.out.println("PersonalDetails table created successfully in the SecondDatabase");
+            System.out.println("Second table created successfully in the Database");
         } catch (SQLException e) {
             e.printStackTrace();
         }
